@@ -11,6 +11,7 @@ const rootReducers = createRootReducers();
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
+  whitelist: ['auth'],
 };
 
 const persistedReducers = persistReducer(persistConfig, rootReducers);

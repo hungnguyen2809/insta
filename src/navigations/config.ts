@@ -1,4 +1,0 @@
-export const SCREEN = {
-  LOGIN: 'SCREEN.LOGIN',
-  REGISTER: 'SCREEN.REGISTER',
-};

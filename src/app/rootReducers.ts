@@ -1,9 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import counterReducer from 'src/redux/counter/slice';
+import authReducer from 'src/redux/auth/slice';
 
 const createRootReducers = () => {
   return combineReducers({
-    counter: counterReducer,
+    auth: authReducer,
   });
 };
 
