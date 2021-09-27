@@ -80,17 +80,24 @@ import com.android.build.OutputFile
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
 ]
-project.ext.vectoricons = [
-        iconFontNames: [
-                'Ionicons.ttf',
-                'MaterialIcons.ttf',
-                'FontAwesome.ttf'
-        ]
-]
-
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 apply from: "../../node_modules/react-native/react.gradle"
 
+//react-native-vector-icons
+project.ext.vectoricons = [
+    iconFontNames: [
+        'Ionicons.ttf',
+        'MaterialIcons.ttf',
+        'FontAwesome.ttf'
+    ]
+]
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+//react-native-config
+project.ext.envConfigFiles = [
+    debug: ".env",
+    release: ".env.production",
+]
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -197,7 +204,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

@@ -66,13 +66,13 @@ const LoginScreen = () => {
       <ScrollView contentContainerStyle={{ flex: 1 }}>
         <View style={styles.logo}>
           <Text style={styles.titleLogo} allowFontScaling={false}>
-            INSTA APP
+            Insta App
           </Text>
         </View>
         <View style={styles.content}>
           <InputField
             containerStyles={styles.textInputEmail}
-            style={styles.heightInput}
+            style={styles.contentInput}
             name={'email'}
             maxLength={35}
             control={control}
@@ -81,7 +81,7 @@ const LoginScreen = () => {
           />
           <InputField
             containerStyles={styles.textInputPass}
-            style={styles.heightInput}
+            style={styles.contentInput}
             name={'password'}
             maxLength={20}
             control={control}

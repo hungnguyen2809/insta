@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Colors, DeviceUiInfo } from 'src/utils';
+import { Colors, DeviceUiInfo, Fonts } from 'src/utils';
 
 export const styles = StyleSheet.create({
   container: {
@@ -12,8 +12,9 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titleLogo: {
+    fontFamily: Fonts.BonheurRoyale,
     textAlign: 'center',
-    fontSize: DeviceUiInfo.scale(20),
+    fontSize: DeviceUiInfo.scale(30),
   },
   content: {
     flex: 5,
@@ -28,8 +29,9 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.aliceblue,
     marginTop: DeviceUiInfo.scale(15),
   },
-  heightInput: {
+  contentInput: {
     height: DeviceUiInfo.scale(23),
+    fontFamily: Fonts.OpenSans,
   },
   warpAction: {
     flex: 1,
@@ -45,12 +47,14 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loginTitle: {
+    fontFamily: Fonts.OpenSans,
     color: Colors.white,
     textAlign: 'center',
     fontSize: DeviceUiInfo.scale(13),
     lineHeight: DeviceUiInfo.scale(24),
   },
   textHaveAccount: {
+    fontFamily: Fonts.OpenSans,
     textAlign: 'center',
     marginTop: DeviceUiInfo.scale(10),
     fontSize: DeviceUiInfo.scale(11),
@@ -60,6 +64,7 @@ export const styles = StyleSheet.create({
     marginTop: DeviceUiInfo.scale(10),
   },
   textCreate: {
+    fontFamily: Fonts.OpenSans,
     textDecorationLine: 'underline',
     fontSize: DeviceUiInfo.scale(12),
     lineHeight: DeviceUiInfo.scale(18),
