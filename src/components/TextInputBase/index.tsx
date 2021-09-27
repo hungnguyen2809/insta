@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    textAlignVertical: 'top',
     fontSize: DeviceUiInfo.scale(13),
+    paddingVertical: 0,
     paddingHorizontal: DeviceUiInfo.scale(5),
   },
 });
