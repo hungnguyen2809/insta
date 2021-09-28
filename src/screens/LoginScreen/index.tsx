@@ -5,13 +5,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Snackbar } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import InputField from 'src/components/FormFields/InputField';
 import { LoginForm } from 'src/models';
 import { RootAuthParamList } from 'src/navigations';
-import { authActions, selectAuthLoading } from 'src/redux/auth/slice';
+import { authActions, selectAuthError, selectAuthLoading } from 'src/redux/auth/slice';
 import { Colors } from 'src/utils';
 import * as yup from 'yup';
 import { styles } from './styles';
@@ -36,6 +37,7 @@ const LoginScreen = () => {
   const navigation = useNavigation<LoginScreenNavigation>();
 
   const loadingLogin = useAppSelector(selectAuthLoading);
+  const errorLogin = useAppSelector(selectAuthError);
 
   const [showPass, setShowPass] = useState<boolean>(false);
 
@@ -47,6 +49,10 @@ const LoginScreen = () => {
     defaultValues: { email: '', password: '' },
     resolver: yupResolver(schema),
   });
+
+  const onDismissSnackbar = () => {
+    dispatch(authActions.onResetError());
+  };
 
   const onShowPass = () => {
     setShowPass(!showPass);
@@ -74,6 +80,7 @@ const LoginScreen = () => {
             containerStyles={styles.textInputEmail}
             style={styles.contentInput}
             name={'email'}
+            keyboardType={'email-address'}
             maxLength={35}
             control={control}
             placeholder={'...@examp.com'}
@@ -128,6 +135,12 @@ const LoginScreen = () => {
           </View>
         </View>
       </ScrollView>
+      <Snackbar
+        visible={errorLogin.status}
+        onDismiss={onDismissSnackbar}
+        duration={Snackbar.DURATION_SHORT}>
+        {errorLogin.message}
+      </Snackbar>
     </View>
   );
 };
