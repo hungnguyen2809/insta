@@ -53,8 +53,8 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>BonheurRoyaleRegular.ttf</string>
-		<string>OpenSans.ttf</string>
+		<string>Bonheur Royale Regular.ttf</string>
+		<string>Open Sans.ttf</string>
 		<string>FontAwesome.ttf</string>
 		<string>Ionicons.ttf</string>
 		<string>MaterialIcons.ttf</string>
