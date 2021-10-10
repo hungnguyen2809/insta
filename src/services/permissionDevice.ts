@@ -70,3 +70,11 @@ export const checkPermissionsPhoto = async (rationale?: Rationale) => {
   });
   return devicePermissions ? await requestPermissions(devicePermissions, rationale) : false;
 };
+
+export const checkPermissionsAudio = async (rationale?: Rationale) => {
+  const devicePermissions = Platform.select({
+    ios: PERMISSIONS.IOS.MICROPHONE,
+    android: PERMISSIONS.ANDROID.RECORD_AUDIO,
+  });
+  return devicePermissions ? await requestPermissions(devicePermissions, rationale) : false;
+};

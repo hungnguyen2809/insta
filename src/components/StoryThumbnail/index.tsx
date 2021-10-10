@@ -22,7 +22,7 @@ const StoryThumbnail = () => {
           </View>
         </LinearGradient>
       </TouchableWithoutFeedback>
-      <Text allowFontScaling={false} style={styles.textName}>
+      <Text numberOfLines={1} allowFontScaling={false} style={styles.textName}>
         hvchopper
       </Text>
     </View>

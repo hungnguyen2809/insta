@@ -1,5 +1,6 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as StoreProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from 'src/app/store';
@@ -9,9 +10,11 @@ const App = () => {
   return (
     <StoreProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <PaperProvider>
-          <AppNavigationContainter />
-        </PaperProvider>
+        <SafeAreaProvider>
+          <PaperProvider>
+            <AppNavigationContainter />
+          </PaperProvider>
+        </SafeAreaProvider>
       </PersistGate>
     </StoreProvider>
   );

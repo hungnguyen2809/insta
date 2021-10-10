@@ -1,13 +1,32 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import HeaderBar from 'src/components/HeaderBar';
-import { styles } from './styles';
-import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { TakePictureResponse } from 'react-native-camera';
 import IconsAwesome from 'react-native-vector-icons/FontAwesome';
-import { Colors, DeviceUiInfo } from 'src/utils';
+import IconsMC from 'react-native-vector-icons/MaterialCommunityIcons';
+import HeaderBar from 'src/components/HeaderBar';
 import StoryThumbnail from 'src/components/StoryThumbnail';
+import { HomeTabParamList } from 'src/navigations';
+import { checkPermissionsAudio, checkPermissionsCamera } from 'src/services';
+import { Colors, DeviceUiInfo } from 'src/utils';
+import { styles } from './styles';
 
-const HomeScreen = () => {
+type HomeScreenProps = NativeStackScreenProps<HomeTabParamList, 'HOME_SCREEN'>;
+
+const HomeScreen = ({ navigation }: HomeScreenProps) => {
+  const takePhoto = (photo: TakePictureResponse) => {
+    console.log(photo.uri);
+  };
+
+  const onNavigateCreateStory = async () => {
+    const permisionCamera = await checkPermissionsCamera();
+    const permisionAudio = await checkPermissionsAudio();
+
+    if (permisionAudio && permisionCamera) {
+      navigation.navigate('TAKE_PHOTO', { takePhoto });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <HeaderBar>
@@ -16,7 +35,10 @@ const HomeScreen = () => {
             Insta
           </Text>
           <View style={styles.wrapActionRight}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.btnAction}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.btnAction}
+              onPress={onNavigateCreateStory}>
               <IconsAwesome
                 name={'plus-square-o'}
                 size={DeviceUiInfo.scale(22)}
@@ -24,7 +46,7 @@ const HomeScreen = () => {
               />
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={0.8} style={styles.btnAction}>
-              <Icons
+              <IconsMC
                 name={'facebook-messenger'}
                 size={DeviceUiInfo.scale(22)}
                 color={Colors.wizardgrey}

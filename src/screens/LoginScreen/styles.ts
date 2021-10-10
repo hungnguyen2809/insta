@@ -5,7 +5,6 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: DeviceUiInfo.StatusBarHeight,
   },
   logo: {
     flex: 2,
