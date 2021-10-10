@@ -1,30 +1,37 @@
-import { useIsFocused } from '@react-navigation/core';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { CompositeScreenProps, useIsFocused } from '@react-navigation/core';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TakePictureResponse } from 'react-native-camera';
 import RNCameraView from 'src/components/RNCameraView';
-import { HomeTabParamList } from 'src/navigations';
+import { MainTabParamList, RootMainParamList } from 'src/navigations/models';
 import { Colors } from 'src/utils';
 
-type TakePhotoScreenProps = NativeStackScreenProps<HomeTabParamList, 'TAKE_PHOTO'>;
+type TakePhotoScreenProps = CompositeScreenProps<
+  NativeStackScreenProps<RootMainParamList, 'TAKE_PHOTO_SCREEN'>,
+  BottomTabScreenProps<MainTabParamList>
+>;
 
 const TakePhotoScreen = ({ navigation, route }: TakePhotoScreenProps) => {
   const isFocused = useIsFocused();
 
   const takePhoto = (photo: TakePictureResponse) => {
-    if (route.params) {
-      route.params.takePhoto(photo);
-      navigation.goBack();
-    }
+    navigation.navigate('HOME_SCREEN', { photo });
   };
 
   const goBackScreen = () => {
-    navigation.goBack();
+    navigation.navigate('HOME_SCREEN');
   };
 
   if (isFocused) {
-    return <RNCameraView takePhoto={takePhoto} onPressBack={goBackScreen} />;
+    return (
+      <RNCameraView
+        optionPhoto={route.params?.option}
+        takePhoto={takePhoto}
+        onPressBack={goBackScreen}
+      />
+    );
   } else {
     return <View style={style.awaitCamera} />;
   }

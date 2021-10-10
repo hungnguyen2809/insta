@@ -1,31 +1,33 @@
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { CompositeScreenProps } from '@react-navigation/core';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { TakePictureResponse } from 'react-native-camera';
 import IconsAwesome from 'react-native-vector-icons/FontAwesome';
 import IconsMC from 'react-native-vector-icons/MaterialCommunityIcons';
 import HeaderBar from 'src/components/HeaderBar';
 import StoryThumbnail from 'src/components/StoryThumbnail';
-import { HomeTabParamList } from 'src/navigations';
+import { MainTabParamList, RootMainParamList } from 'src/navigations/models';
 import { checkPermissionsAudio, checkPermissionsCamera } from 'src/services';
 import { Colors, DeviceUiInfo } from 'src/utils';
 import { styles } from './styles';
 
-type HomeScreenProps = NativeStackScreenProps<HomeTabParamList, 'HOME_SCREEN'>;
+type HomeScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, 'HOME_SCREEN'>,
+  NativeStackScreenProps<RootMainParamList>
+>;
 
-const HomeScreen = ({ navigation }: HomeScreenProps) => {
-  const takePhoto = (photo: TakePictureResponse) => {
-    console.log(photo.uri);
-  };
-
+const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
   const onNavigateCreateStory = async () => {
     const permisionCamera = await checkPermissionsCamera();
     const permisionAudio = await checkPermissionsAudio();
 
     if (permisionAudio && permisionCamera) {
-      navigation.navigate('TAKE_PHOTO', { takePhoto });
+      navigation.navigate('TAKE_PHOTO_SCREEN');
     }
   };
+
+  console.log('Param URI: ', route.params?.photo?.uri);
 
   return (
     <View style={styles.container}>
