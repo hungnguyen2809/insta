@@ -19,7 +19,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import InputField from 'src/components/FormFields/InputField';
 import { LoginForm } from 'src/models';
-import { RootAuthParamList } from 'src/navigations';
+import { RootAuthParamList } from 'src/navigations/models';
 import { authActions, selectAuthError, selectAuthLoading } from 'src/redux/auth/slice';
 import { Colors, DeviceUiInfo } from 'src/utils';
 import * as yup from 'yup';
