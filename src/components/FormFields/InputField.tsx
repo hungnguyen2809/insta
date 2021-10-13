@@ -2,7 +2,7 @@ import React from 'react';
 import { Control, useController } from 'react-hook-form';
 import { StyleSheet, Text, View } from 'react-native';
 import { Colors, DeviceUiInfo } from 'src/utils';
-import TextInputBase, { TextInputBaseProps } from '../TextInputBase';
+import { TextInputBase, TextInputBaseProps } from '../BaseComponents';
 
 interface Props extends TextInputBaseProps {
   name: string;

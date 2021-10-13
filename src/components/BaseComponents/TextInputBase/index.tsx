@@ -8,7 +8,7 @@ import {
   ViewStyle,
   TouchableOpacity,
 } from 'react-native';
-import { Colors, DeviceUiInfo } from 'src/utils';
+import { Colors, DeviceUiInfo, Fonts } from 'src/utils';
 
 export interface TextInputBaseProps extends TextInputProps {
   containerStyles?: StyleProp<ViewStyle>;
@@ -18,7 +18,7 @@ export interface TextInputBaseProps extends TextInputProps {
   disabledPressRight?: boolean;
 }
 
-const TextInputBase = (
+const _TextInputBase = (
   {
     iconLeft,
     iconRight,
@@ -28,12 +28,17 @@ const TextInputBase = (
     disabledPressRight,
     ...textInputProp
   }: TextInputBaseProps,
-  ref: React.Ref<TextInput>,
+  ref: React.LegacyRef<TextInput>,
 ) => {
   return (
     <View style={[styles.container, containerStyles]}>
       {iconLeft && iconLeft}
-      <TextInput ref={ref} style={[styles.textInput, style]} {...textInputProp} />
+      <TextInput
+        allowFontScaling={false}
+        ref={ref}
+        style={[styles.textInput, style]}
+        {...textInputProp}
+      />
       {iconRight && (
         <TouchableOpacity activeOpacity={0.8} disabled={disabledPressRight} onPress={onPressRight}>
           {iconRight}
@@ -43,7 +48,7 @@ const TextInputBase = (
   );
 };
 
-export default React.forwardRef(TextInputBase);
+export const TextInputBase = React.forwardRef(_TextInputBase);
 
 const styles = StyleSheet.create({
   container: {
@@ -58,8 +63,9 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    fontSize: DeviceUiInfo.scale(13),
+    fontFamily: Fonts.OpenSans,
     paddingVertical: 0,
+    fontSize: DeviceUiInfo.scale(13),
     paddingHorizontal: DeviceUiInfo.scale(5),
   },
 });
