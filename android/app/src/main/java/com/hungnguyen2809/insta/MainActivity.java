@@ -1,6 +1,9 @@
 package com.hungnguyen2809.insta;
 
+import android.os.Bundle;
 import com.facebook.react.ReactActivity;
+import com.zoontek.rnbootsplash.RNBootSplash;
+
 
 public class MainActivity extends ReactActivity {
 
@@ -11,5 +14,11 @@ public class MainActivity extends ReactActivity {
   @Override
   protected String getMainComponentName() {
     return "Insta";
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    RNBootSplash.init(R.drawable.splash_screen, MainActivity.this);
   }
 }

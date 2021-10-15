@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import React, { useEffect, useState } from 'react';
+import RNBootSplash from 'react-native-bootsplash';
 import { useAppSelector } from 'src/app/hooks';
 import { selectAuthToken } from 'src/redux/auth/slice';
 import AuthNavigation from './AuthNavigation';
@@ -12,6 +13,8 @@ export const AppNavigationContainter = () => {
   const [showLottie, setShowLottie] = useState<boolean>(true);
 
   useEffect(() => {
+    RNBootSplash.hide({ fade: true });
+
     const timeLottie = setTimeout(() => {
       setShowLottie(false);
     }, 2000);
