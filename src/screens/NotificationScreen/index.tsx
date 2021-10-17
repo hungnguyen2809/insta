@@ -1,12 +1,24 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Colors } from 'src/utils';
 
 const NotificationScreen = () => {
   return (
-    <View>
-      <Text>NotificationScreen</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>NotificationScreen</Text>
+    </SafeAreaView>
   );
 };
 
 export default NotificationScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
+  title: {
+    textAlign: 'center',
+  },
+});
