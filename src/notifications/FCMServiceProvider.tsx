@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import fcmService from './FCMService';
 import NotifiManager from './NotificationManager';
 
-export class NotificationProvider extends Component {
+export class FCMServiceProvider extends Component {
   componentDidMount() {
     fcmService.registerAppWithFCM();
     fcmService.register(this.onRegister, this.onNotification, this.onOpenNotification);
@@ -16,16 +16,16 @@ export class NotificationProvider extends Component {
   }
 
   onRegister = (_token: any) => {
-    // console.log('[NotificationProvider] onRegister token: ', _token);
+    // console.log('[FCMServiceProvider] onRegister token: ', _token);
   };
 
   onNotification = (notify: any) => {
-    // console.log('[NotificationProvider] onNotification: ', notify);
+    // console.log('[FCMServiceProvider] onNotification: ', notify);
     NotifiManager.showNotification(notify.title, notify.body, notify);
   };
 
   onOpenNotification = (notify: any) => {
-    // console.log('[NotificationProvider] onOpenNotification: ', notify);
+    // console.log('[FCMServiceProvider] onOpenNotification: ', notify);
     NotifiManager.onOpenNotification(notify);
   };
 

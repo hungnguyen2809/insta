@@ -19,7 +19,7 @@ class NotificationManager extends NotificationService {
   };
 
   private onNotification = (_notification: NotificationReceived) => {
-    // console.log('[NotificationManager] onNotification: ', _notification);
+    console.log('[NotificationManager] onNotification: ', _notification);
   };
 
   onOpenNotification = (notification: OpenNotificationReceived) => {

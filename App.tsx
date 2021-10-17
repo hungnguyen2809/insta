@@ -5,7 +5,7 @@ import { Provider as StoreProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from 'src/app/store';
 import { AppNavigationContainter } from 'src/navigations';
-import { NotificationProvider } from 'src/notifications/NotificationProvider';
+import { FCMServiceProvider } from 'src/notifications/FCMServiceProvider';
 
 const App = () => {
   return (
@@ -14,7 +14,7 @@ const App = () => {
         <SafeAreaProvider>
           <PaperProvider>
             <AppNavigationContainter />
-            <NotificationProvider />
+            <FCMServiceProvider />
           </PaperProvider>
         </SafeAreaProvider>
       </PersistGate>

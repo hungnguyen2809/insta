@@ -1,3 +1,5 @@
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import { Platform } from 'react-native';
 import PushNotification, {
   PushNotificationObject,
   ReceivedNotification,
@@ -31,6 +33,10 @@ class NotificationHandler {
       ) {
         this._onOpenNotification(notification);
       }
+    }
+
+    if (Platform.OS === 'ios') {
+      notification.finish(PushNotificationIOS.FetchResult.NoData);
     }
   }
 
