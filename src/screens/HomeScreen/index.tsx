@@ -5,9 +5,11 @@ import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import IconsAwesome from 'react-native-vector-icons/FontAwesome';
 import IconsMC from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ButtonBase } from 'src/components/BaseComponents';
 import HeaderBar from 'src/components/HeaderBar';
 import StoryThumbnail from 'src/components/StoryThumbnail';
 import { MainTabParamList, RootMainParamList } from 'src/navigations/models';
+import NotifiManager from 'src/notifications/NotificationManager';
 import { checkPermissionsAudio, checkPermissionsCamera } from 'src/services';
 import { Colors, DeviceUiInfo } from 'src/utils';
 import { styles } from './styles';
@@ -17,7 +19,7 @@ type HomeScreenProps = CompositeScreenProps<
   NativeStackScreenProps<RootMainParamList>
 >;
 
-const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
+const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const onNavigateCreateStory = async () => {
     const permisionCamera = await checkPermissionsCamera();
     const permisionAudio = await checkPermissionsAudio();
@@ -26,8 +28,6 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
       navigation.navigate('TAKE_PHOTO_SCREEN');
     }
   };
-
-  console.log('Param URI: ', route.params?.photo?.uri);
 
   return (
     <View style={styles.container}>
@@ -68,6 +68,17 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
             <StoryThumbnail />
             <StoryThumbnail />
           </ScrollView>
+        </View>
+        <View>
+          <ButtonBase
+            title={'Thông báo'}
+            onPress={() => {
+              NotifiManager.showNotification('Thông báo', 'Vi Thị Ngọc Huyền', {
+                name: 'Vi Thị Ngọc Huyền',
+                age: 23,
+              });
+            }}
+          />
         </View>
       </View>
     </View>
