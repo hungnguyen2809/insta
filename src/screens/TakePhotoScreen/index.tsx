@@ -13,7 +13,7 @@ type TakePhotoScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList>
 >;
 
-const TakePhotoScreen = ({ navigation, route }: TakePhotoScreenProps) => {
+const TakePhotoScreen: React.FC<TakePhotoScreenProps> = ({ navigation, route }) => {
   const isFocused = useIsFocused();
 
   const takePhoto = (photo: TakePictureResponse) => {

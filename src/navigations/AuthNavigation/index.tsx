@@ -6,7 +6,7 @@ import { RootAuthParamList } from '../models';
 
 const AuthStack = createNativeStackNavigator<RootAuthParamList>();
 
-const AuthNavigation = () => {
+const AuthNavigation: React.FC = () => {
   return (
     <AuthStack.Navigator initialRouteName={'LOGIN_SCREEN'} screenOptions={{ headerShown: false }}>
       <AuthStack.Screen name={'LOGIN_SCREEN'} component={LoginScreen} />

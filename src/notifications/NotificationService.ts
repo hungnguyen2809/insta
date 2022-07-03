@@ -3,64 +3,78 @@ import { Platform } from 'react-native';
 import PushNotification, {
   ChannelObject,
   Importance,
-  PushNotificationDeliveredObject,
   PushNotificationObject,
-  PushNotificationPermissions,
-  PushNotificationScheduledLocalObject,
-  PushNotificationScheduleObject,
-  ReceivedNotification,
 } from 'react-native-push-notification';
-import NotificationHandler, {
-  NotificationReceived,
-  OpenNotificationReceived,
-  TokenRegisterNotification,
-} from './NotificationHandler';
+import { logger } from 'src/utils';
 
-export default class NotificationService {
-  private lastId: number;
-  private lastChannelCounter: number;
-  private channelIdDefault = 'default-channel-id';
+interface NotificationOptions extends PushNotificationObject {
+  [key: string]: any;
+}
 
-  constructor(
-    onRegister: (token: TokenRegisterNotification) => void,
-    onNotification: (noti: NotificationReceived) => void,
-    onOpenNotification: (noti: OpenNotificationReceived) => void,
-  ) {
-    NotificationHandler.attachRegister(onRegister);
-    NotificationHandler.attachNotification(onNotification);
-    NotificationHandler.attachOpenNotification(onOpenNotification);
+class NotificationService {
+  private lastId: number = 0;
+  private channelIdDefault: string = 'channel-id-default';
 
-    this.lastId = 0;
-    this.lastChannelCounter = 0;
-
+  constructor() {
     this.createDefaultChannels();
     this.clearIconBadgeNumber();
   }
 
-  createDefaultChannels = () => {
+  configure(onOpenNotification: Function, onAction: Function) {
+    PushNotification.configure({
+      onAction: notification => {
+        if (typeof onAction === 'function') {
+          onAction(notification);
+        }
+      },
+      onNotification: notification => {
+        if (!notification.data) {
+          return;
+        }
+
+        if (
+          notification.foreground &&
+          notification.userInteraction &&
+          typeof onOpenNotification === 'function'
+        ) {
+          onOpenNotification(notification);
+        }
+
+        if (Platform.OS === 'ios') {
+          notification.finish(PushNotificationIOS.FetchResult.NoData);
+        }
+      },
+      onRegistrationError: error => {
+        logger.log('[onRegistrationError]: ', error);
+      },
+      requestPermissions: true,
+      popInitialNotification: true,
+      permissions: { alert: true, badge: true, sound: true },
+    });
+  }
+
+  unregister() {
+    PushNotification.unregister();
+  }
+
+  createDefaultChannels() {
     PushNotification.createChannel(
       {
-        channelId: this.channelIdDefault, // (required)
-        channelName: 'Default channel', // (required)
-        channelDescription: 'Default channel', // (optional) default: undefined.
-        soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
-        importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
-        vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+        channelId: this.channelIdDefault,
+        channelName: 'Default channel',
+        channelDescription: 'Default channel',
+        soundName: 'default',
+        importance: Importance.HIGH,
+        vibrate: true,
       },
-      (_created: boolean) => {
-        // (optional) callback returns whether the channel was created, false means it already existed.
-        // console.log(`createChannel 'default-channel-id' returned '${_created}'`);
+      created => {
+        logger.log('createDefaultChannels: ', created);
       },
     );
-  };
+  }
 
   createOrUpdateChannel = (channel: ChannelObject, callback: (created: boolean) => void) => {
-    this.lastChannelCounter++;
     PushNotification.createChannel(channel, callback);
-  };
-
-  getLastChannelIdCounter = () => {
-    return this.lastChannelCounter;
   };
 
   getChannels = (callback: (channel_ids: string[]) => void) => {
@@ -69,115 +83,44 @@ export default class NotificationService {
     });
   };
 
-  popInitialNotification = (callback: (notification: ReceivedNotification | null) => void) => {
-    PushNotification.popInitialNotification(callback);
-  };
-
-  showNotification = (
+  showNotification(
     title: string,
     message: string,
     data = {},
-    options?: PushNotificationObject,
-  ) => {
+    options?: Partial<NotificationOptions>,
+  ) {
     this.lastId++;
     PushNotification.localNotification({
-      //other options
-      ...options,
-      /* Android Only Properties */
+      //Both
+      id: this.lastId,
+      title: title || 'Thông báo',
+      message: message || '',
+      data: data,
+      userInfo: data,
+      playSound: options?.playSound || true,
+      soundName: options?.soundName || 'default',
+      badge: true,
+      userInteraction: false, //xử lý việc người dùng có action nhấn từ thông báo hay là tự động
+      //Android
+      subText: title || '',
+      bigText: message || '',
       channelId: this.channelIdDefault,
-      autoCancel: true,
       largeIcon: options?.largeIcon || 'ic_launcher',
       smallIcon: options?.smallIcon || 'ic_launcher',
-      bigText: message || '',
-      subText: title || '',
-      vibrate: options?.vibrate || false,
+      vibrate: options?.vibrate || true,
       vibration: options?.vibration || 300,
-      // actions: ['Yes', 'No'],
-      invokeApp: true,
+      priority: options?.priority || 'high',
       importance: options?.importance || 'high',
-      visibility: options?.visibility || 'private',
-      allowWhileIdle: true,
-      // userInteraction: false,
-
-      /* iOS only properties */
+      //IOS
       category: options?.category || '',
-      // subtitle: options?.subTitleIOS || '',
+      subtitle: options?.subtitle || '',
+    } as NotificationOptions);
 
-      /* iOS and Android properties */
-      id: this.lastId,
-      title: title,
-      message: message,
-      userInfo: data,
-      playSound: options?.playSound || true,
-      soundName: options?.soundName || 'default',
-    });
-  };
-
-  scheduleNotification = (
-    title: string,
-    message: string,
-    time = 5,
-    data = {},
-    options?: PushNotificationScheduleObject,
-  ) => {
-    this.lastId++;
-    PushNotification.localNotificationSchedule({
-      date: new Date(Date.now() + time * 1000), // in 'time' secs
-
-      //other options
-      ...options,
-      /* Android Only Properties */
-      channelId: this.channelIdDefault,
-      autoCancel: true,
-      largeIcon: options?.largeIcon || 'ic_launcher',
-      smallIcon: options?.smallIcon || 'ic_notification',
-      bigText: message || '',
-      subText: title || '',
-      color: options?.color || 'red',
-      vibrate: options?.vibrate || false,
-      vibration: options?.vibration || 300,
-      actions: ['Yes', 'No'],
-      invokeApp: true,
-      importance: options?.importance || 'high',
-      visibility: options?.visibility || 'private',
-
-      /* iOS only properties */
-      category: options?.category || '',
-
-      /* iOS and Android properties */
-      id: this.lastId,
-      title: title,
-      message: message,
-      userInfo: data,
-      playSound: options?.playSound || true,
-      soundName: options?.soundName || 'default',
-    });
-  };
-
-  checkPermission = (callback: (permissions: PushNotificationPermissions) => void) => {
-    return PushNotification.checkPermissions(callback);
-  };
-
-  requestPermissions = (permissions?: ('alert' | 'badge' | 'sound')[]) => {
-    return PushNotification.requestPermissions(permissions);
-  };
-
-  cancelNotificationById(notificationId?: string) {
-    const notiID = notificationId ? notificationId : `${this.lastId}`;
-    PushNotification.cancelLocalNotification(notiID);
+    return this.lastId;
   }
 
-  cancelAllLocalNotificaions = () => {
-    if (Platform.OS === 'ios') {
-      PushNotificationIOS.removeAllDeliveredNotifications();
-    } else {
-      PushNotification.cancelAllLocalNotifications();
-    }
-    this.clearIconBadgeNumber();
-  };
-
+  // Clear badge number when start open app
   clearIconBadgeNumber = () => {
-    // Clear badge number at start
     PushNotification.getApplicationIconBadgeNumber(number => {
       if (number > 0) {
         PushNotification.setApplicationIconBadgeNumber(0);
@@ -185,27 +128,16 @@ export default class NotificationService {
     });
   };
 
-  abandonPermissions = () => {
-    PushNotification.abandonPermissions();
+  cancelAllLocalNotifications = () => {
+    PushNotification.cancelAllLocalNotifications();
+    this.clearIconBadgeNumber();
   };
 
-  getScheduledLocalNotifications = (
-    callback: (notifications: PushNotificationScheduledLocalObject[]) => void,
-  ) => {
-    PushNotification.getScheduledLocalNotifications(callback);
-  };
-
-  getDeliveredNotifications = (
-    callback: (notifications: PushNotificationDeliveredObject[]) => void,
-  ) => {
-    PushNotification.getDeliveredNotifications(callback);
-  };
-
-  unRegister = () => {
-    PushNotification.unregister();
-  };
-
-  unsubscribeFromTopic = (topic: string) => {
-    PushNotification.unsubscribeFromTopic(topic);
-  };
+  cancelLocalNotification(notificationId?: string) {
+    const notiID = notificationId ? notificationId : `${this.lastId}`;
+    PushNotification.cancelLocalNotification(notiID);
+  }
 }
+
+const notifiService = new NotificationService();
+export default notifiService;

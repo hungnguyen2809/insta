@@ -39,7 +39,7 @@ const IconTabProfile = ({ color, focused, size }: TabBarIcon) => {
 
 const Tabs = createBottomTabNavigator<MainTabParamList>();
 
-const MainTab = () => {
+const MainTab: React.FC = () => {
   return (
     <Tabs.Navigator
       initialRouteName={'HOME_SCREEN'}

@@ -5,6 +5,14 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 const { width, height } = Dimensions.get('window');
 
+export const logger = {
+  log: (...message: any) => {
+    if (__DEV__) {
+      console.log(...message);
+    }
+  },
+};
+
 export class DeviceUiInfo {
   private static screenSizeWithPixelRatio = {
     width: width * PixelRatio.get(),

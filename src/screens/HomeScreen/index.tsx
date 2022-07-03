@@ -9,7 +9,7 @@ import { ButtonBase } from 'src/components/BaseComponents';
 import HeaderBar from 'src/components/HeaderBar';
 import StoryThumbnail from 'src/components/StoryThumbnail';
 import { MainTabParamList, RootMainParamList } from 'src/navigations/models';
-import NotifiManager from 'src/notifications/NotificationManager';
+import notifiService from 'src/notifications/NotificationService';
 import { checkPermissionsAudio, checkPermissionsCamera } from 'src/services';
 import { Colors, DeviceUiInfo } from 'src/utils';
 import { styles } from './styles';
@@ -19,7 +19,7 @@ type HomeScreenProps = CompositeScreenProps<
   NativeStackScreenProps<RootMainParamList>
 >;
 
-const HomeScreen = ({ navigation }: HomeScreenProps) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const onNavigateCreateStory = async () => {
     const permisionCamera = await checkPermissionsCamera();
     const permisionAudio = await checkPermissionsAudio();
@@ -73,7 +73,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           <ButtonBase
             title={'Thông báo'}
             onPress={() => {
-              NotifiManager.showNotification('Thông báo', 'Vi Thị Ngọc Huyền', {
+              notifiService.showNotification('Thông báo', 'Vi Thị Ngọc Huyền', {
                 name: 'Vi Thị Ngọc Huyền',
                 age: 23,
               });

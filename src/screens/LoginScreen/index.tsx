@@ -40,7 +40,7 @@ const schema = yup.object().shape({
     .typeError('Vui lòng nhập mật khẩu.'),
 });
 
-const LoginScreen = () => {
+const LoginScreen: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<LoginScreenNavigation>();
 

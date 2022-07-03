@@ -7,7 +7,7 @@ import { RootAuthParamList } from 'src/navigations/models';
 
 type RegisterScreenNavigation = NativeStackNavigationProp<RootAuthParamList, 'REGISTER_SCREEN'>;
 
-const RegisterScreen = () => {
+const RegisterScreen: React.FC = () => {
   const navigation = useNavigation<RegisterScreenNavigation>();
 
   const onGoBack = () => {

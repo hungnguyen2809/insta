@@ -1,17 +1,21 @@
 import messaging from '@react-native-firebase/messaging';
 import { Platform } from 'react-native';
+import { logger } from 'src/utils';
+import notifiService from './NotificationService';
 
 class FCMService {
-  private unMessageListener: () => void = () => {};
+  private messageListener: (() => void) | undefined = undefined;
 
-  register = (onRegister: Function, onNotification: Function, onOpenNotification: Function) => {
+  onRegister = (onRegister: Function, onNotification: Function, onOpenNotification: Function) => {
     this.checkPermission(onRegister);
     this.createNotificationListeners(onRegister, onNotification, onOpenNotification);
   };
 
-  registerAppWithFCM = async () => {
+  onRegisterAppWithFCM = async () => {
     if (Platform.OS === 'ios') {
-      // await messaging().registerDeviceForRemoteMessages();
+      if (messaging().isDeviceRegisteredForRemoteMessages) {
+        await messaging().registerDeviceForRemoteMessages();
+      }
       await messaging().setAutoInitEnabled(true);
     }
   };
@@ -19,17 +23,18 @@ class FCMService {
   checkPermission = (onRegister: Function) => {
     messaging()
       .hasPermission()
-      .then(enabled => {
-        if (enabled) {
-          // user has permission
+      .then(status => {
+        if (
+          status === messaging.AuthorizationStatus.AUTHORIZED ||
+          status === messaging.AuthorizationStatus.PROVISIONAL
+        ) {
           this.getToken(onRegister);
         } else {
-          // user don't have permison
           this.requestPermission(onRegister);
         }
       })
       .catch(error => {
-        console.log('[FCMService] Permission rejected', error);
+        logger.log('[FCMService] Permission rejected', error);
       });
   };
 
@@ -38,33 +43,40 @@ class FCMService {
       .getToken()
       .then(fcmToken => {
         if (fcmToken) {
-          onRegister(fcmToken);
+          onRegister(fcmToken, false);
         } else {
-          console.log('[FCMService] User does not have a decive token ');
+          logger.log('[FCMService] User does not have a decive token ');
         }
       })
       .catch(error => {
-        console.log('[FCMService] getToken rejected', error);
+        logger.log('[FCMService] getToken rejected', error);
       });
   };
 
   requestPermission = (onRegister: Function) => {
     messaging()
       .requestPermission()
-      .then(() => {
-        this.getToken(onRegister);
+      .then(status => {
+        if (
+          status === messaging.AuthorizationStatus.AUTHORIZED ||
+          status === messaging.AuthorizationStatus.PROVISIONAL
+        ) {
+          this.getToken(onRegister);
+        }
       })
       .catch(error => {
-        console.log('[FCMService] Request Permission rejected', error);
+        logger.log('[FCMService] Request Permission rejected', error);
       });
   };
 
   deleteToken = () => {
-    console.log('[FCMService] Delete Token');
     messaging()
       .deleteToken()
+      .then(() => {
+        logger.log('[FCMService] Delete Token');
+      })
       .catch(error => {
-        console.log('[FCMService] Delete Token rejected', error);
+        logger.log('[FCMService] Delete Token rejected', error);
       });
   };
 
@@ -75,9 +87,8 @@ class FCMService {
   ) => {
     // When the application is running, but in the background
     messaging().onNotificationOpenedApp(remoteMessage => {
-      // console.log('[FCMService] onNotificationOpenedApp: ', remoteMessage);
       if (remoteMessage) {
-        const notification = remoteMessage.notification;
+        const notification = remoteMessage;
         onOpenNotification(notification);
       }
     });
@@ -86,39 +97,48 @@ class FCMService {
     messaging()
       .getInitialNotification()
       .then(remoteMessage => {
-        // console.log('[FCMService] getInitialNotification: ', remoteMessage);
         if (remoteMessage) {
-          const notification = remoteMessage.notification;
+          const notification = remoteMessage;
+          notifiService.cancelAllLocalNotifications();
           onOpenNotification(notification);
         }
       });
 
-    this.unMessageListener = messaging().onMessage(async remoteMessage => {
-      console.log('[FCMService] onMessage: ', remoteMessage);
+    //When app revive notification form firebase messaging
+    this.messageListener = messaging().onMessage(async remoteMessage => {
+      // logger.log('[FCMService] onMessage: ', remoteMessage);
       if (remoteMessage) {
         let notification = null;
+
         if (Platform.OS === 'ios') {
-          notification = remoteMessage.data?.notification;
+          notification = remoteMessage.data;
         } else {
-          notification = remoteMessage.notification;
+          notification = remoteMessage;
         }
 
         onNotification(notification);
       }
     });
 
-    // Trigger when have new toke
     messaging().onTokenRefresh(fcmToken => {
-      console.log('[FCMService] onTokenRefresh: ', fcmToken);
-      onRegister(fcmToken);
+      // logger.log('[FCMService] onTokenRefresh: ', fcmToken);
+      if (fcmToken) {
+        onRegister(fcmToken, true);
+      }
     });
   };
 
-  unRegister = () => {
-    if (typeof this.unMessageListener === 'function') {
-      this.unMessageListener();
+  unregister = () => {
+    if (typeof this.messageListener === 'function') {
+      this.messageListener();
     }
   };
+
+  // stopAlarmRing = async () => {
+  //   if (Platform.OS !== 'ios') {
+  //     await messaging().stopAlarmRing();
+  //   }
+  // };
 }
 
 const fcmService = new FCMService();

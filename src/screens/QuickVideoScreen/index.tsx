@@ -7,7 +7,7 @@ import { styles } from './styles';
 
 const SIZE = 100;
 
-const QuickVideoScreen = () => {
+const QuickVideoScreen: React.FC = () => {
   const progress = useSharedValue(1);
 
   const reanimatedStyle = useAnimatedStyle(() => {

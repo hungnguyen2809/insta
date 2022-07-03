@@ -7,13 +7,14 @@ import { selectAuthToken } from 'src/redux/auth/slice';
 import AuthNavigation from './AuthNavigation';
 import MainNavigation from './MainNavigation';
 
-export const AppNavigationContainter = () => {
+export const AppNavigationContainter: React.FC = () => {
   const token = useAppSelector(selectAuthToken);
 
-  const [showLottie, setShowLottie] = useState<boolean>(true);
+  const [showLottie, setShowLottie] = useState<boolean>(false);
 
   useEffect(() => {
     RNBootSplash.hide({ fade: true });
+    setShowLottie(true);
 
     const timeLottie = setTimeout(() => {
       setShowLottie(false);

@@ -6,7 +6,7 @@ import MainTab from './MainTab';
 
 const MainStack = createNativeStackNavigator<RootMainParamList>();
 
-const MainNavigation = () => {
+const MainNavigation: React.FC = () => {
   return (
     <MainStack.Navigator initialRouteName={'MAIN_TAB'} screenOptions={{ headerShown: false }}>
       <MainStack.Group>
