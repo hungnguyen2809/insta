@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as StoreProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from 'src/app/store';
-import { AppNavigationContainter } from 'src/navigations';
+import AppNavigationContainter from 'src/navigations';
 import NotificationProvider from 'src/notifications';
 
 const App: React.FC = () => {

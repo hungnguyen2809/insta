@@ -1,5 +1,7 @@
 import { HomeScreenParam, TakePhotoScreenParam } from './params';
 
+export type ParamsListApp = RootAuthParamList & MainTabParamList & RootMainParamList;
+
 export type RootAuthParamList = {
   LOGIN_SCREEN: object | undefined;
   REGISTER_SCREEN: object | undefined;
