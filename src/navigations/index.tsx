@@ -14,20 +14,18 @@ export const navigation = { ...navigationRef.current } as NavigationContainerRef
 const AppNavigationContainter: React.FC = () => {
   const token = useAppSelector(selectAuthToken);
 
-  const [showLottie, setShowLottie] = useState<boolean>(false);
+  const [showLottie, setShowLottie] = useState<boolean>(true);
 
   useEffect(() => {
-    RNBootSplash.hide({ fade: true });
-    setShowLottie(true);
+    init();
+  }, []);
 
-    const timeLottie = setTimeout(() => {
+  const init = async () => {
+    RNBootSplash.hide({ fade: true });
+    setTimeout(() => {
       setShowLottie(false);
     }, 2000);
-
-    return () => {
-      clearTimeout(timeLottie);
-    };
-  }, []);
+  };
 
   if (showLottie) {
     return (
